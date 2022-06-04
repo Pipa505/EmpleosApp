@@ -19,7 +19,7 @@ public class HomeControler {
         List<Vacante> lista = getVacantes();
         model.addAttribute("vacantes",lista);
 
-        return "tabla";sdklmdskmvslkmsd
+        return "tabla";sdklmdskmvslkmsdlksdmlkscmsklmcs
     }
     @GetMapping("/detalle")
     public String mostrarDetalle(Model model){
