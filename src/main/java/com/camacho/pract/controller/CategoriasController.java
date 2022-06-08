@@ -5,11 +5,13 @@ import com.camacho.pract.service.ICategoriasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.xml.ws.soap.Addressing;
 import java.util.List;
 
 @Controller
@@ -34,10 +36,17 @@ public class CategoriasController {
     }
     // @PostMapping("/save")
     @RequestMapping(value="/save", method=RequestMethod.POST)
-    public String guardar(@RequestParam("nombre") String nombre,@RequestParam("descripcion") String descripcion) {
-        System.out.println("categoria: "+nombre);
-        System.out.println("descripcion: "+descripcion);
-        return "categorias/listCategorias";
+    public String guardar(Categoria categoria, BindingResult result, RedirectAttributes attributes) {
+        if (result.hasErrors()){
+            for (ObjectError error : result.getAllErrors()){
+                System.out.println("Ha ocurrido un error: "+error.getDefaultMessage());
+            }
+            return "categorias/formCategoria";
+        }
+        categoriasService.guardar(categoria);
+        attributes.addFlashAttribute("msg","Categoria creada correctamente");
+        System.out.println("Categoria: "+categoria);
+        return "redirect:/categorias/index";
     }
 
 }

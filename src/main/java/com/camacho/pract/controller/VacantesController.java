@@ -1,6 +1,7 @@
 package com.camacho.pract.controller;
 
 import com.camacho.pract.model.Vacante;
+import com.camacho.pract.service.ICategoriasService;
 import com.camacho.pract.service.IVacantesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -22,6 +23,9 @@ public class VacantesController {
 
     @Autowired
     private IVacantesService serviceVacantes;
+
+    @Autowired
+    private ICategoriasService serviceCategorias;
     @GetMapping("/index")
     public String mostrarIndex(Model model){
        List<Vacante> lista = serviceVacantes.buscarTodas();
@@ -29,7 +33,8 @@ public class VacantesController {
         return "vacantes/listVacantes";
     }
     @GetMapping("/create")
-    public String crear(Vacante vacante){
+    public String crear(Vacante vacante, Model model){
+        model.addAttribute("categorias",serviceCategorias.buscarTodas());
         return "vacantes/formVacante";
     }
     /*@PostMapping("/save")
