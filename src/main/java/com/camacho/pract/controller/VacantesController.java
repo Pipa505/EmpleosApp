@@ -3,7 +3,9 @@ package com.camacho.pract.controller;
 import com.camacho.pract.model.Vacante;
 import com.camacho.pract.service.ICategoriasService;
 import com.camacho.pract.service.IVacantesService;
+import com.camacho.pract.util.Utileria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
@@ -21,6 +24,8 @@ import java.util.List;
 @RequestMapping("/vacantes")
 public class VacantesController {
 
+    @Value("${empleosapp.ruta.imagenes}")
+    private String ruta;
     @Autowired
     private IVacantesService serviceVacantes;
 
@@ -51,12 +56,22 @@ public class VacantesController {
         return "vacantes/listVacantes";
     }*/
     @PostMapping("/save")
-    public String guardar(Vacante vacante, BindingResult result, RedirectAttributes attributes){
+    public String guardar(Vacante vacante, BindingResult result, RedirectAttributes attributes, @RequestParam("archivoImagen")MultipartFile multiPart,Model model){
         if (result.hasErrors()){
             for (ObjectError error: result.getAllErrors()){
                 System.out.println("Ocurrio un error: "+error.getDefaultMessage());
             }
+            model.addAttribute("categorias",serviceCategorias.buscarTodas());
             return "vacantes/formVacante";
+        }
+        if (!multiPart.isEmpty()) {
+            //String ruta = "/empleos/img-vacantes/"; // Linux/MAC
+            //String ruta = "d:/empleos/img-vacantes/"; // Windows
+            String nombreImagen = Utileria.guardarArchivo(multiPart, ruta);
+            if (nombreImagen != null){ // La imagen si se subio
+                // Procesamos la variable nombreImagen
+                vacante.setImagen(nombreImagen);
+            }
         }
         serviceVacantes.guardar(vacante);
         attributes.addFlashAttribute("msg","Registro Guardado");

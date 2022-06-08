@@ -29,7 +29,7 @@
         <div class="card">
           <h4 class="card-header"><strong>Datos de la oferta de trabajo</strong></h4>
           <div class="card-body">
-            <form th:action="@{/vacantes/save}" method="post" th:object="${vacante}">
+            <form th:action="@{/vacantes/save}" method="post" th:object="${vacante}" enctype="multipart/form-data">
             <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
               Por favor corrija estos errores
               <ul>
@@ -55,8 +55,8 @@
               <div class="row">
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="categoria">Categoría</label>
-                    <select class="form-control" name="categoria" id="categoria">
+                    <label>Categoría</label>
+                    <select class="form-control" th:field="*{categoria.id}" name="categoria">
                       <option  th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"></option>
                     </select>
                   </div>
