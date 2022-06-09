@@ -56,7 +56,7 @@ public class VacantesController {
         return "vacantes/listVacantes";
     }*/
     @PostMapping("/save")
-    public String guardar(Vacante vacante, BindingResult result, RedirectAttributes attributes, @RequestParam("archivoImagen")MultipartFile multiPart,Model model){
+    public String guardar(Vacante vacante, BindingResult result, RedirectAttributes attributes, @RequestParam("archivoImagen")MultipartFile multiPart, Model model){
         if (result.hasErrors()){
             for (ObjectError error: result.getAllErrors()){
                 System.out.println("Ocurrio un error: "+error.getDefaultMessage());
