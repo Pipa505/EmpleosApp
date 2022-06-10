@@ -3,6 +3,7 @@ package com.camacho.pract.controller;
 import com.camacho.pract.model.Categoria;
 import com.camacho.pract.service.ICategoriasService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CategoriasController {
 
     @Autowired
+    //@Qualifier("categoriasServiceJpa")
     private ICategoriasService categoriasService;
 
     // @GetMapping("/index")

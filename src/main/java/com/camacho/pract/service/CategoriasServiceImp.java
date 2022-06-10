@@ -1,6 +1,7 @@
 package com.camacho.pract.service;
 
 import com.camacho.pract.model.Categoria;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
