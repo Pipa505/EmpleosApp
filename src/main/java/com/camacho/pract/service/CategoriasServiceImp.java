@@ -2,6 +2,8 @@ package com.camacho.pract.service;
 
 import com.camacho.pract.model.Categoria;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -80,6 +82,11 @@ public class CategoriasServiceImp implements ICategoriasService{
     @Override
     public void eliminar(Integer idCategoria) {
 
+    }
+
+    @Override
+    public Page<Categoria> buscarTodas(Pageable page) {
+        return null;
     }
 
 
