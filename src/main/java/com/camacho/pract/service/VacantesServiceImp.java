@@ -1,6 +1,7 @@
 package com.camacho.pract.service;
 
 import com.camacho.pract.model.Vacante;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -92,5 +93,10 @@ public class VacantesServiceImp implements IVacantesService {
     @Override
     public void eliminar(Integer idVacante) {
 
+    }
+
+    @Override
+    public List<Vacante> buscarByExapmle(Example<Vacante> example) {
+        return null;
     }
 }

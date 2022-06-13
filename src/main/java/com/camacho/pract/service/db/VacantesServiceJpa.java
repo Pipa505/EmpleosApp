@@ -5,6 +5,7 @@ import com.camacho.pract.repository.VacantesRepository;
 import com.camacho.pract.service.IVacantesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,5 +43,10 @@ public class VacantesServiceJpa implements IVacantesService {
     @Override
     public void eliminar(Integer idVacante) {
         vacantesRepo.deleteById(idVacante);
+    }
+
+    @Override
+    public List<Vacante> buscarByExapmle(Example<Vacante> example) {
+        return vacantesRepo.findAll(example);
     }
 }
