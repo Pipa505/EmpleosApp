@@ -32,28 +32,37 @@ public class DatabaseWebSecurity extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-        // Los recursos estáticos no requieren autenticación
+
+                // Los recursos estáticos no requieren autenticación
                 .antMatchers(
                         "/bootstrap/**",
                         "/images/**",
                         "/tinymce/**",
                         "/logos/**").permitAll()
-        // Las vistas públicas no requieren autenticación
+
+                // Las vistas públicas no requieren autenticación
                 .antMatchers("/",
+                        "/login",
                         "/signup",
                         "/search",
-                        "/bycript/**",
+                        "/bcrypt/**",
+                        "/about",
                         "/vacantes/view/**").permitAll()
 
                 // Asignar permisos a URLs por ROLES
+                .antMatchers("/solicitudes/create/**",
+                        "/solicitudes/save/**").hasAuthority("USUARIO")
+
+                .antMatchers("/solicitudes/**").hasAnyAuthority("SUPERVISOR","ADMINISTRADOR")
                 .antMatchers("/vacantes/**").hasAnyAuthority("SUPERVISOR","ADMINISTRADOR")
                 .antMatchers("/categorias/**").hasAnyAuthority("SUPERVISOR","ADMINISTRADOR")
                 .antMatchers("/usuarios/**").hasAnyAuthority("ADMINISTRADOR")
 
                 // Todas las demás URLs de la Aplicación requieren autenticación
                 .anyRequest().authenticated()
-        // El formulario de Login no requiere autenticacion
-                .and().formLogin().loginPage("/login").permitAll();
+                // El formulario de Login no requiere autenticacion
+                .and().formLogin().loginPage("/login").permitAll()
+                .and().logout().permitAll();
     }
 
     @Bean
