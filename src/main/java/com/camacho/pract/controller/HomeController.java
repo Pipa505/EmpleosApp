@@ -14,14 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -36,8 +40,28 @@ public class HomeController {
 	@Autowired
 	private ICategoriasService serviceCategorias;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-	
+	@GetMapping("/index")
+	public String mostrarIndex(Authentication auth, HttpSession session){
+		String username = auth.getName();
+		System.out.println("Nombre del usuario: "+username);
+
+		for (GrantedAuthority rol : auth.getAuthorities()){
+			System.out.println("ROL: "+rol.getAuthority());
+		}
+
+		if(session.getAttribute("usuario")==null){
+			Usuario usuario = serviceUsuarios.buscarPorUsername(username);
+			usuario.setPassword(null);
+			System.out.println("Usuario: "+usuario);
+			session.setAttribute("usuario",usuario);
+		}
+
+		return "redirect:/";
+	}
+
 	@GetMapping("/")
 	public String mostrarHome(Model model) {
 		return "home";
@@ -50,6 +74,10 @@ public class HomeController {
 	
 	@PostMapping("/signup")
 	public String guardarRegistro(Usuario usuario, RedirectAttributes attributes) {
+		String pwdPlano= usuario.getPassword();
+		String pwdEncriptado = passwordEncoder.encode(pwdPlano);
+		usuario.setPassword(pwdEncriptado);
+
 		usuario.setEstatus(1);
 		usuario.setFechaRegistro(new Date());
 
@@ -93,6 +121,7 @@ public class HomeController {
 		
 		return "listado";
 	}
+
 	@GetMapping("/search")
 	public String buscar(@ModelAttribute("search") Vacante vacante, Model model){
 		System.out.println("Buscando por "+vacante);
@@ -105,6 +134,23 @@ public class HomeController {
 		model.addAttribute("vacantes",lista);
 		return "home";
 	}
+
+	@GetMapping("/login" )
+	public String mostrarLogin() {
+		return "formLogin";
+	}
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request){
+		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		logoutHandler.logout(request,null,null);
+		return "redirect:/login";
+	}
+	@GetMapping("/bycript/{texto}")
+	@ResponseBody
+	public String encriptar(@PathVariable("texto") String texto){
+		return texto + "encriptado por ByCript: "+ passwordEncoder.encode(texto);
+	}
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder){
 		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
